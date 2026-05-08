@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>AI 應用實戰 — 用 AI 做兩個 App</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #111;
+    --grey: #555;
+    --light: #f5f5f3;
+    --line: #e0e0dc;
+    --accent: #1a1a1a;
+    --tag-bg: #f0ede8;
+  }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', 'Noto Serif TC', sans-serif;
+    background: #fff;
+    color: var(--black);
+    overflow-x: hidden;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress {
+    position: fixed; top: 0; left: 0; height: 2px;
+    background: var(--black); width: 0%;
+    transition: width .3s ease; z-index: 999;
+    display: none;
+  }
+
+  /* ── NAV DOTS ── */
+  #nav-dots {
+    position: fixed; right: 28px; top: 50%;
+    transform: translateY(-50%);
+    display: none; flex-direction: column; gap: 10px;
+    z-index: 100;
+  }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--line); cursor: pointer;
+    transition: background .3s, transform .3s;
+  }
+  .dot.active { background: var(--black); transform: scale(1.4); }
+
+  /* ── SLIDE ── */
+  .slide {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 80px 10vw;
+    border-bottom: 1px solid var(--line);
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .slide.visible { opacity: 1; transform: none; }
+
+  /* ── SLIDE 0 — COVER ── */
+  #s0 {
+    background: var(--black);
+    color: #fff;
+    padding: 80px 10vw;
+    position: relative; overflow: hidden;
+  }
+  #s0::before {
+    content: '';
+    position: absolute; top: -120px; right: -120px;
+    width: 450px; height: 450px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.06);
+  }
+  #s0::after {
+    content: '';
+    position: absolute; bottom: -80px; left: 8vw;
+    width: 260px; height: 260px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.05);
+  }
+  .cover-label {
+    font-family: 'DM Mono', monospace;
+    font-size: .75rem; letter-spacing: .18em;
+    color: rgba(255,255,255,.45); margin-bottom: 36px;
+    text-transform: uppercase;
+  }
+  .cover-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 300; line-height: 1.25;
+    color: #fff; margin-bottom: 24px;
+  }
+  .cover-title em { font-style: normal; font-weight: 600; }
+  .cover-sub {
+    font-size: 1rem; color: rgba(255,255,255,.5);
+    font-weight: 300; line-height: 1.8;
+    max-width: 520px;
+  }
+  .cover-chips {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-top: 48px;
+  }
+  .chip {
+    font-family: 'DM Mono', monospace;
+    font-size: .72rem; letter-spacing: .08em;
+    padding: 6px 14px; border-radius: 100px;
+    border: 1px solid rgba(255,255,255,.18);
+    color: rgba(255,255,255,.6);
+  }
+
+  /* ── SECTION LABEL ── */
+  .label {
+    font-family: 'DM Mono', monospace;
+    font-size: .7rem; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--grey);
+    margin-bottom: 20px;
+  }
+
+  /* ── LARGE HEADING ── */
+  .heading {
+    font-family: 'Noto Serif TC', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 300; line-height: 1.35;
+    margin-bottom: 32px; color: var(--black);
+  }
+  .heading strong { font-weight: 600; }
+
+  /* ── BODY TEXT ── */
+  .body {
+    font-size: 1rem; line-height: 1.9;
+    color: #444; max-width: 680px; font-weight: 300;
+  }
+
+  /* ── CARD GRID ── */
+  .card-grid {
+    display: grid; gap: 20px; margin-top: 32px;
+  }
+  .card-grid.cols2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .card-grid.cols3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+  .card {
+    background: var(--light);
+    border: 1px solid var(--line);
+    border-radius: 12px; padding: 28px;
+  }
+  .card-num {
+    font-family: 'DM Mono', monospace;
+    font-size: .68rem; letter-spacing: .15em;
+    color: var(--grey); margin-bottom: 12px;
+  }
+  .card-title {
+    font-size: 1rem; font-weight: 500;
+    margin-bottom: 8px; color: var(--black);
+  }
+  .card-body {
+    font-size: .88rem; line-height: 1.75;
+    color: #555; font-weight: 300;
+  }
+
+  /* ── TIMELINE / STEP LIST ── */
+  .steps { margin-top: 32px; display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: flex; gap: 28px;
+    padding: 28px 0; border-bottom: 1px solid var(--line);
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: .72rem; color: var(--grey);
+    min-width: 36px; padding-top: 3px;
+  }
+  .step-content { flex: 1; }
+  .step-title {
+    font-size: 1rem; font-weight: 500;
+    margin-bottom: 6px; color: var(--black);
+  }
+  .step-body {
+    font-size: .88rem; line-height: 1.75;
+    color: #555; font-weight: 300;
+  }
+
+  /* ── HIGHLIGHT QUOTE ── */
+  .quote {
+    border-left: 3px solid var(--black);
+    padding: 16px 24px; margin: 32px 0;
+    background: var(--light); border-radius: 0 8px 8px 0;
+  }
+  .quote p {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.05rem; line-height: 1.75;
+    color: var(--black); font-weight: 400;
+  }
+
+  /* ── TAG LIST ── */
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: .72rem; letter-spacing: .06em;
+    padding: 5px 13px; border-radius: 6px;
+    background: var(--tag-bg); color: #444;
+    border: 1px solid var(--line);
+  }
+  .tag.dark { background: var(--black); color: #fff; border-color: var(--black); }
+
+  /* ── TWO-COL LAYOUT ── */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px; margin-top: 32px;
+    align-items: start;
+  }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* ── BUG BADGE ── */
+  .bug-list { margin-top: 24px; display: flex; flex-direction: column; gap: 14px; }
+  .bug-item {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 16px 20px; border-radius: 10px;
+    background: #fff8f6; border: 1px solid #f0d8d0;
+  }
+  .bug-icon {
+    font-size: 1rem; min-width: 24px;
+    margin-top: 2px;
+  }
+  .bug-text { font-size: .88rem; line-height: 1.7; color: #555; font-weight: 300; }
+  .bug-fix {
+    font-size: .8rem; color: #888;
+    margin-top: 4px; font-family: 'DM Mono', monospace;
+  }
+
+  
+.phone-frame {
+  display: inline-block;
+  border-radius: 36px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.13), 0 1.5px 6px rgba(0,0,0,0.07);
+  border: 1.5px solid #e0e0dc;
+  width: min(230px, 100%);
+  background: #fff;
+}
+.phone-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.paper-frame {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+  border: 1px solid var(--line);
+  background: #fff;
+  width: min(420px, 100%);
+}
+.paper-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.screenshots-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+  align-items: flex-end;
+}
+.screenshot-caption {
+  font-family: 'DM Mono', monospace;
+  font-size: .68rem;
+  color: #888;
+  margin-top: 8px;
+  text-align: center;
+  letter-spacing: .05em;
+}
+.screenshot-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1 1 220px;
+}
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin-top: 28px;
+}
+.gallery-card {
+  background: #faf9f6;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+}
+.gallery-card h3 {
+  font-size: .94rem;
+  font-weight: 500;
+  margin: 14px 0 8px;
+  color: var(--black);
+}
+.gallery-card p {
+  font-size: .85rem;
+  line-height: 1.75;
+  color: #555;
+  font-weight: 300;
+}
+.image-frame {
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+.image-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.media-note {
+  margin-top: 18px;
+  max-width: 760px;
+  font-size: .9rem;
+  line-height: 1.8;
+  color: #666;
+}
+.feature-quote {
+  margin-top: 24px;
+  max-width: 760px;
+}
+.triple-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 30px;
+  align-items: start;
+}
+.triple-gallery .screenshot-item {
+  min-width: 0;
+}
+@media (max-width: 900px) {
+  .triple-gallery {
+    grid-template-columns: 1fr;
+  }
+}
+
+  /* ── FINAL SLIDE ── */
+  #s-end {
+    background: var(--light);
+    text-align: center;
+    align-items: center;
+  }
+  .end-title {
+    font-family: 'Noto Serif TC', serif;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 300; margin-bottom: 20px;
+  }
+  .end-body {
+    font-size: .95rem; line-height: 1.9;
+    color: #555; max-width: 540px; font-weight: 300;
+  }
+
+  /* ── DIVIDER APP HEADER ── */
+  .app-header {
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px 24px; border-radius: 12px;
+    background: var(--black); color: #fff;
+    margin-bottom: 36px; max-width: 420px;
+  }
+  .app-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; background: rgba(255,255,255,.1);
+  }
+  .app-name { font-weight: 500; font-size: 1rem; }
+  .app-desc { font-size: .78rem; color: rgba(255,255,255,.5); margin-top: 2px; }
+
+  /* scroll arrow */
+  .arrow {
+    position: absolute; bottom: 36px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.2rem; color: rgba(255,255,255,.3);
+    animation: bounce 2s infinite;
+    display: none;
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  @media print {
+    @page {
+      size: A4 landscape;
+      margin: 12mm;
+    }
+
+    html, body {
+      background: #fff;
+    }
+
+    #progress,
+    #nav-dots,
+    .arrow {
+      display: none !important;
+    }
+
+    .slide,
+    .slide.visible {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+      min-height: 186mm;
+      break-after: page;
+      page-break-after: always;
+      padding: 24px 28px;
+      justify-content: center;
+    }
+
+    .slide:last-of-type {
+      break-after: auto;
+      page-break-after: auto;
+    }
+
+    .phone-frame,
+    .paper-frame {
+      box-shadow: none;
+    }
+
+    .gallery-grid,
+    .triple-gallery,
+    .two-col,
+    .card-grid.cols3 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .screenshots-row {
+      gap: 12px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<nav id="nav-dots"></nav>
+
+<section class="slide visible" id="s0">
+  <div class="cover-label">AI 應用實戰 · 2025</div>
+  <h1 class="cover-title">用 AI 做了<em>兩個 App</em>，<br>從需求到上機的完整紀錄</h1>
+  <p class="cover-sub">不會寫 code 也沒關係。只要你夠了解自己的需求，AI 就能幫你把它做出來。</p>
+  <div class="cover-chips">
+    <span class="chip">Xcode</span>
+    <span class="chip">ChatChatGPT</span>
+    <span class="chip">Codex</span>
+    <span class="chip">iOS App</span>
+    <span class="chip">本機部署</span>
+  </div>
+  <div class="arrow">↓</div>
+</section>
+
+<section class="slide" id="s1">
+  <div class="label">背景</div>
+  <h2 class="heading">為什麼想自己<strong>做 App？</strong></h2>
+  <p class="body">
+    市面上的 App 很多，但很少有哪一個能剛好符合自己的使用場景。<br>
+    自己做，才能真正照著自己的邏輯走。
+  </p>
+  <div class="card-grid cols2" style="margin-top:36px">
+    <div class="card">
+      <div class="card-num">前提 01</div>
+      <div class="card-title">我很清楚自己的需求</div>
+      <div class="card-body">不是因為想學 coding，而是因為有一個真實的痛點需要解決。定義清楚需求，是整件事最重要的一步。</div>
+    </div>
+    <div class="card">
+      <div class="card-num">前提 02</div>
+      <div class="card-title">資料留在本機端</div>
+      <div class="card-body">不需要上架 App Store，不需要雲端服務。只需要在自己的手機上跑就夠了。</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s2">
+  <div class="app-header">
+    <div class="app-icon">🗓</div>
+    <div>
+      <div class="app-name">App 01 — 紀念日</div>
+      <div class="app-desc">Memorial Day Tracker</div>
+    </div>
+  </div>
+  <div class="label">需求來源</div>
+  <h2 class="heading">從「倒數計時 App」<br>到<strong>「任務紀念日」</strong></h2>
+  <div class="two-col">
+    <div>
+      <p class="body">
+        以前用過倒數計時 App，設定考試日期、計算剩餘天數。<br><br>
+        但我的需求不同——我需要記錄的是<strong>從開始到結束的時間跨度</strong>，而且可能長達數月甚至數年。
+      </p>
+      <div class="tags" style="margin-top:24px">
+        <span class="tag">長期任務追蹤</span>
+        <span class="tag">類「紀念日」概念</span>
+        <span class="tag">本機資料儲存</span>
+      </div>
+    </div>
+    <div class="quote">
+      <p>「我需要知道我已經做了這件事多少天，而不是還剩幾天。」</p>
+    </div>
+  </div>
+
+  <div class="gallery-grid">
+    <div class="gallery-card">
+      <div class="image-frame">
+        <img src="assets/app01-v1.png" alt="任務紀念日 App 第一版畫面">
+      </div>
+      <h3>第一版：先驗證核心概念</h3>
+      <p>先驗證核心概念，在 AI 建議下出現了釘選功能。</p>
+    </div>
+    <div class="gallery-card">
+      <div class="image-frame">
+        <img src="assets/app01-v2.png" alt="任務紀念日 App 第二版畫面">
+      </div>
+      <h3>第二版：開始做出視覺層次</h3>
+      <p>加入顏色卡片與更多資訊密度後，也從調整排序的邏輯。</p>
+    </div>
+  </div>
+  <p class="media-note">這幾張圖可以直接看出這個 App 的成長路徑：從能不能用，到好不好用，再到能不能自然融入每天的手機桌面。</p>
+</section>
+
+<section class="slide" id="s3">
+  <div class="label">實作關鍵</div>
+  <h2 class="heading"><strong>SwiftUI + SwiftData</strong><br>快速建立資料模型</h2>
+  <p class="body">這是一個標準的 CRUD 應用。透過 AI，我只需要定義出我的 Task 模型包含什麼欄位，像是名稱、開始日期、狀態與卡片顏色，它就能幫我寫好大部分的資料邏輯與畫面結構。</p>
+  
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <div class="step-title">資料持久化</div>
+        <div class="step-body">使用 iOS 內建的 SwiftData，不需要額外設定伺服器，資料直接存在 iPhone 本機。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <div class="step-title">動態時間計算</div>
+        <div class="step-body">實作一個 Timer 讓 UI 上的「已過天數」能即時跳動，增加使用者的成就感。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <div class="step-title">UI 與配色</div>
+        <div class="step-body">我直接請他使用 iOS guideline 製作，讓整體畫面在配色、留白和操作感上更貼近 iPhone 原生介面。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="triple-gallery">
+    <div class="screenshot-item">
+      <div class="phone-frame">
+        <img src="assets/app01-widget.png" alt="紀念日 App 的 Widget 畫面">
+      </div>
+      <div class="screenshot-caption">在主畫面直接看到目前累積天數</div>
+    </div>
+    <div class="screenshot-item">
+      <div class="phone-frame">
+        <img src="assets/app01-final.png" alt="紀念日 App 最終版任務列表">
+      </div>
+      <div class="screenshot-caption">最終版：把每個任務整理成清楚的卡片列表</div>
+    </div>
+    <div class="screenshot-item">
+      <div class="phone-frame">
+        <img src="assets/app01-settings.png" alt="任務紀念日 App 的新增項目設定畫面">
+      </div>
+      <div class="screenshot-caption">設定畫面就是資料模型的投影</div>
+    </div>
+  </div>
+  <p class="media-note">這三張圖剛好對應到 App 的三個層次：桌面入口、任務列表，以及新增資料時的欄位設計。</p>
+</section>
+
+<section class="slide" id="s4">
+  <div class="app-header">
+    <div class="app-icon">🧠</div>
+    <div>
+      <div class="app-name">App 02 — 情緒紀錄</div>
+      <div class="app-desc">Emotion Log</div>
+    </div>
+  </div>
+  <div class="label">需求來源</div>
+  <h2 class="heading">以「可能幫助他人」<br>為前提設計</h2>
+  <div class="two-col">
+    <div>
+      <p class="body">
+        所有設定欄位皆可自訂，不限定藥物種類，讓 App 有潛力服務更多有類似需求的使用者。
+      </p>
+      <div class="tags" style="margin-top:24px">
+        <span class="tag">可自訂欄位</span>
+        <span class="tag">月曆視覺化</span>
+        <span class="tag">健康管理</span>
+      </div>
+    </div>
+    <div class="quote">
+      <p>「不是只做給自己用，而是先把結構做成也可能幫助他人的樣子。」</p>
+    </div>
+  </div>
+
+  <div class="screenshots-row">
+    <div class="screenshot-item">
+      <div class="paper-frame">
+        <img src="assets/app02-paper-day.jpg" alt="情緒紀錄 App 的紙本單日紀錄">
+      </div>
+      <div class="screenshot-caption">紙本單日紀錄</div>
+    </div>
+    <div class="screenshot-item">
+      <div class="paper-frame">
+        <img src="assets/app02-paper-month.jpg" alt="情緒紀錄 App 的紙本月曆紀錄">
+      </div>
+      <div class="screenshot-caption">紙本月曆紀錄</div>
+    </div>
+  </div>
+  <p class="media-note">我先在紙本上把欄位和標記方式整理清楚，再把這個結構搬進 App，讓需求來源本身就能支撐後面的功能設計。</p>
+</section>
+
+<section class="slide" id="s5">
+  <div class="label">App 02 · 功能設計</div>
+  <h2 class="heading">不只是記錄<br><strong>而是為了與醫師溝通</strong></h2>
+  <div class="card-grid cols3">
+    <div class="card">
+      <div class="card-num">功能 01</div>
+      <div class="card-title">自訂藥物清單</div>
+      <div class="card-body">區分「每日常規」與「需要時使用」兩種藥物，藥名與用法完全自訂。</div>
+    </div>
+    <div class="card">
+      <div class="card-num">功能 02</div>
+      <div class="card-title">月曆情緒視覺化</div>
+      <div class="card-body">模擬回診時用顏色向醫師說明這個月的狀態，讓溝通更直觀有效率。</div>
+    </div>
+    <div class="card">
+      <div class="card-num">功能 03</div>
+      <div class="card-title">睡眠 / 運動紀錄</div>
+      <div class="card-body">睡眠狀況、運動習慣、保健食品更換記錄，作為管理身心健康所需的完整資料。</div>
+    </div>
+  </div>
+  <div style="margin-top:24px">
+    <div class="card" style="max-width:520px">
+      <div class="card-num">設計初衷</div>
+      <div class="card-title">希望這個 App 也能幫助到其他人</div>
+      <div class="card-body">所有設定都做成可自訂，不綁定特定藥物或醫療情境，讓有相似需求的人都能使用。</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s6">
+  <div class="label">問題與解決</div>
+  <h2 class="heading">情緒紀錄 App · 問題與解決</h2>
+  <p class="body">兩次更新，修復兩個核心問題。因為對需求非常熟悉，整體開發順暢，主要處理了兩個具體的 Bug。</p>
+
+  <div class="bug-list">
+    <div class="bug-item">
+      <div class="bug-icon">🐛</div>
+      <div class="bug-text">
+        <div><strong>Bug 1：深色模式下藥丸消失</strong></div>
+        <div>白色藥丸圖示在日夜間切換時，於深色背景下完全不可見，影響使用體驗。</div>
+        <div class="bug-fix">解法：調整圖示顏色邏輯，使其依系統外觀自動切換，確保深色與淺色模式下皆清晰可見。</div>
+      </div>
+    </div>
+    <div class="bug-item">
+      <div class="bug-icon">🐛</div>
+      <div class="bug-text">
+        <div><strong>Bug 2：失眠標記邏輯錯誤</strong></div>
+        <div>睡眠記錄中的「失眠標記」欄位出現邏輯判斷錯誤，無法正確對應到月曆標記顯示。</div>
+        <div class="bug-fix">解法：重新梳理欄位選取與月曆標記的對應邏輯，修正判斷條件，讓自訂欄位正確觸發標記。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s7">
+  <div class="label">回顧與心得</div>
+  <h2 class="heading">做完兩個 App<br><strong>我學到的事</strong></h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">①</div>
+      <div class="step-content">
+        <div class="step-title">需求越清楚，AI 越好用</div>
+        <div class="step-body">不需要懂技術，但需要把自己的使用場景說清楚。需求模糊是所有問題的根源。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">②</div>
+      <div class="step-content">
+        <div class="step-title">Codex 比 ChatGPT 更適合做開發</div>
+        <div class="step-body">ChatGPT 適合諮詢，Codex 適合動手做。工具選對了，開發才會順。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">③</div>
+      <div class="step-content">
+        <div class="step-title">你就是最好的 QA</div>
+        <div class="step-body">自己開發、自己用，遇到問題最快。真實使用場景是最好的測試環境。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">④</div>
+      <div class="step-content">
+        <div class="step-title">有時候問題不在 code</div>
+        <div class="step-body">Widget 的破圖靠重裝解決。遇到怎麼改都沒用的 bug，試試換個方向。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="s-end">
+  <div class="label">結語</div>
+  <h2 class="end-title">你不需要會寫 code，<br>你只需要知道自己要什麼。</h2>
+  <p class="end-body">第一手資訊 Data 生於日常，<br>AI 工具是實現構想、跨越技術、還原想像的手。</p>
+  <div class="tags" style="margin-top:36px; justify-content:center;">
+    <span class="tag dark">Xcode</span>
+    <span class="tag dark">Codex</span>
+    <span class="tag dark">iOS 本機部署</span>
+    <span class="tag dark">紀念日</span>
+    <span class="tag dark">情緒紀錄</span>
+  </div>
+</section>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const nav = document.getElementById('nav-dots');
+  const progress = document.getElementById('progress');
+
+  // Build dots
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => slides[i].scrollIntoView({ behavior: 'smooth' }));
+    nav.appendChild(d);
+  });
+
+  const dots = document.querySelectorAll('.dot');
+
+  // Intersection observer
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        const idx = [...slides].indexOf(entry.target);
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+      }
+    });
+  }, { threshold: 0.3 });
+
+  slides.forEach(s => io.observe(s));
+
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    progress.style.width = scrolled + "%";
+  });
+</script>
+
+</body>
+</html>
