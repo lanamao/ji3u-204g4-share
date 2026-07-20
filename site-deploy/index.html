@@ -385,6 +385,93 @@
     50% { transform: translateX(-50%) translateY(8px); }
   }
 
+  /* ── BIO ── */
+  .bio {
+    border-left: 3px solid var(--black);
+    padding: 6px 0 6px 26px;
+    max-width: 640px;
+    margin-top: 8px;
+  }
+  .bio-name {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.9rem; font-weight: 300;
+    line-height: 1.2; color: var(--black);
+  }
+  .bio-role {
+    font-family: 'DM Mono', monospace;
+    font-size: .72rem; letter-spacing: .14em;
+    color: var(--grey); margin: 6px 0 22px;
+  }
+  .bio-creed {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.05rem; line-height: 1.9;
+    color: var(--black); margin-top: 22px; font-weight: 400;
+  }
+
+  /* ── DAY COUNTER ── */
+  .counter { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .counter-num {
+    font-family: 'Noto Serif TC', serif;
+    font-size: clamp(4rem, 12vw, 8rem);
+    font-weight: 300; line-height: .9;
+    letter-spacing: -.03em; color: var(--black);
+  }
+  .counter-unit {
+    font-family: 'DM Mono', monospace;
+    font-size: .78rem; letter-spacing: .2em; color: var(--grey);
+  }
+  .counter-range {
+    font-family: 'DM Mono', monospace;
+    font-size: .74rem; letter-spacing: .12em;
+    color: var(--grey); margin: 14px 0 36px;
+  }
+  .days {
+    display: grid; grid-template-columns: repeat(16, 1fr);
+    gap: 6px; max-width: 560px;
+  }
+  .day {
+    aspect-ratio: 1; background: var(--black); border-radius: 2px;
+    opacity: 0; transform: scale(.4);
+    animation: dayPop .5s cubic-bezier(.2,.8,.3,1) forwards;
+  }
+  .day.lost { background: transparent; border: 1px solid #c0564a; }
+  @keyframes dayPop { to { opacity: 1; transform: scale(1); } }
+  .days-legend {
+    display: flex; gap: 24px; flex-wrap: wrap; margin-top: 24px;
+    font-family: 'DM Mono', monospace; font-size: .7rem;
+    letter-spacing: .08em; color: var(--grey);
+  }
+  .days-legend span { display: flex; align-items: center; gap: 8px; }
+  .swatch { width: 10px; height: 10px; border-radius: 2px; background: var(--black); }
+  .swatch.out { background: transparent; border: 1px solid #c0564a; }
+  .counter-note {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.1rem; line-height: 1.9;
+    color: var(--black); margin-top: 36px;
+  }
+  @media (max-width: 700px) { .days { grid-template-columns: repeat(11, 1fr); gap: 5px; } }
+
+  /* ── POSTSCRIPT ── */
+  #s-ps { background: #fffaf9; }
+  #s-ps .label { color: #a8483c; }
+  .ps-punch {
+    font-family: 'Noto Serif TC', serif;
+    font-size: clamp(1.25rem, 2.6vw, 1.7rem);
+    line-height: 1.6; color: var(--black);
+    margin: 34px 0; max-width: 620px; font-weight: 400;
+  }
+  .ps-close {
+    border-left: 3px solid #c0564a;
+    padding: 4px 0 4px 22px; margin-top: 34px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.1rem; line-height: 1.9; color: var(--black);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .day { animation: none !important; opacity: 1; transform: none; }
+  }
+
   @media print {
     @page {
       size: A4 landscape;
@@ -433,6 +520,9 @@
     .screenshots-row {
       gap: 12px;
     }
+
+    .day { animation: none !important; opacity: 1 !important; transform: none !important; }
+    #s-ps { background: #fff; }
   }
 </style>
 </head>
@@ -442,17 +532,28 @@
 <nav id="nav-dots"></nav>
 
 <section class="slide visible" id="s0">
-  <div class="cover-label">AI 應用實戰 · 2025</div>
+  <div class="cover-label">AI 應用實戰 · 2026</div>
   <h1 class="cover-title">用 AI 做了<em>兩個 App</em>，<br>從需求到上機的完整紀錄</h1>
   <p class="cover-sub">不會寫 code 也沒關係。只要你夠了解自己的需求，AI 就能幫你把它做出來。</p>
   <div class="cover-chips">
     <span class="chip">Xcode</span>
-    <span class="chip">ChatChatGPT</span>
+    <span class="chip">ChatGPT</span>
     <span class="chip">Codex</span>
+    <span class="chip">Claude</span>
     <span class="chip">iOS App</span>
     <span class="chip">本機部署</span>
   </div>
   <div class="arrow">↓</div>
+</section>
+
+<section class="slide" id="s-intro">
+  <div class="label">關於我</div>
+  <div class="bio">
+    <div class="bio-name">Lana</div>
+    <div class="bio-role">休養中的產品設計師</div>
+    <p class="body">6 年產品設計經驗。過去一年被迫停下來，一邊重新調校自己的工作與生活節奏，一邊用 AI 把日常裡最私密的需求做成產品——包括一支自己寫給自己用的情緒紀錄 App。</p>
+    <p class="bio-creed">相信工具始終服務於人，而身而為人的本質是體驗。<br>也相信最好的使用者研究對象，有時候就是自己。</p>
+  </div>
 </section>
 
 <section class="slide" id="s1">
@@ -506,14 +607,14 @@
   <div class="gallery-grid">
     <div class="gallery-card">
       <div class="image-frame">
-        <img src="assets/app01-v1.png" alt="任務紀念日 App 第一版畫面">
+        <img src="https://lanamao.github.io/ji3u-204g4-share/assets/app01-v1.png" alt="任務紀念日 App 第一版畫面">
       </div>
       <h3>第一版：先驗證核心概念</h3>
       <p>先驗證核心概念，在 AI 建議下出現了釘選功能。</p>
     </div>
     <div class="gallery-card">
       <div class="image-frame">
-        <img src="assets/app01-v2.png" alt="任務紀念日 App 第二版畫面">
+        <img src="https://lanamao.github.io/ji3u-204g4-share/assets/app01-v2.png" alt="任務紀念日 App 第二版畫面">
       </div>
       <h3>第二版：開始做出視覺層次</h3>
       <p>加入顏色卡片與更多資訊密度後，也從調整排序的邏輯。</p>
@@ -554,19 +655,19 @@
   <div class="triple-gallery">
     <div class="screenshot-item">
       <div class="phone-frame">
-        <img src="assets/app01-widget.png" alt="紀念日 App 的 Widget 畫面">
+        <img src="https://lanamao.github.io/ji3u-204g4-share/assets/app01-widget.png" alt="紀念日 App 的 Widget 畫面">
       </div>
       <div class="screenshot-caption">在主畫面直接看到目前累積天數</div>
     </div>
     <div class="screenshot-item">
       <div class="phone-frame">
-        <img src="assets/app01-final.png" alt="紀念日 App 最終版任務列表">
+        <img src="https://lanamao.github.io/ji3u-204g4-share/assets/app01-final.png" alt="紀念日 App 最終版任務列表">
       </div>
       <div class="screenshot-caption">最終版：把每個任務整理成清楚的卡片列表</div>
     </div>
     <div class="screenshot-item">
       <div class="phone-frame">
-        <img src="assets/app01-settings.png" alt="任務紀念日 App 的新增項目設定畫面">
+        <img src="https://lanamao.github.io/ji3u-204g4-share/assets/app01-settings.png" alt="任務紀念日 App 的新增項目設定畫面">
       </div>
       <div class="screenshot-caption">設定畫面就是資料模型的投影</div>
     </div>
@@ -583,11 +684,12 @@
     </div>
   </div>
   <div class="label">需求來源</div>
-  <h2 class="heading">以「可能幫助他人」<br>為前提設計</h2>
+  <h2 class="heading">它的起點，<br>是一場<strong>回診</strong></h2>
   <div class="two-col">
     <div>
       <p class="body">
-        所有設定欄位皆可自訂，不限定藥物種類，讓 App 有潛力服務更多有類似需求的使用者。
+        我有一段時間，每天要記錄自己吃了哪些藥、睡得怎樣、有沒有運動、情緒到哪個刻度。<br><br>
+        因為回診的時候，醫師會問我「這個月狀況怎麼樣」，而我永遠答不出來。
       </p>
       <div class="tags" style="margin-top:24px">
         <span class="tag">可自訂欄位</span>
@@ -596,20 +698,20 @@
       </div>
     </div>
     <div class="quote">
-      <p>「不是只做給自己用，而是先把結構做成也可能幫助他人的樣子。」</p>
+      <p>「我先用紙本記。記了一陣子之後我發現——我要的不是一個資料庫，是一個下班以後還願意打開的東西。」</p>
     </div>
   </div>
 
   <div class="screenshots-row">
     <div class="screenshot-item">
       <div class="paper-frame">
-        <img src="assets/app02-paper-day.jpg" alt="情緒紀錄 App 的紙本單日紀錄">
+        <img src="https://lanamao.github.io/ji3u-204g4-share/assets/app02-paper-day.jpg" alt="情緒紀錄 App 的紙本單日紀錄">
       </div>
       <div class="screenshot-caption">紙本單日紀錄</div>
     </div>
     <div class="screenshot-item">
       <div class="paper-frame">
-        <img src="assets/app02-paper-month.jpg" alt="情緒紀錄 App 的紙本月曆紀錄">
+        <img src="https://lanamao.github.io/ji3u-204g4-share/assets/app02-paper-month.jpg" alt="情緒紀錄 App 的紙本月曆紀錄">
       </div>
       <div class="screenshot-caption">紙本月曆紀錄</div>
     </div>
@@ -629,7 +731,7 @@
     <div class="card">
       <div class="card-num">功能 02</div>
       <div class="card-title">月曆情緒視覺化</div>
-      <div class="card-body">模擬回診時用顏色向醫師說明這個月的狀態，讓溝通更直觀有效率。</div>
+      <div class="card-body">回診時用顏色向醫師說明這個月的狀態，讓溝通更直觀有效率。</div>
     </div>
     <div class="card">
       <div class="card-num">功能 03</div>
@@ -671,6 +773,21 @@
   </div>
 </section>
 
+<section class="slide" id="s-days">
+  <div class="label">實際使用</div>
+  <div class="counter">
+    <span class="counter-num">129</span>
+    <span class="counter-unit">天</span>
+  </div>
+  <div class="counter-range">2026.04.14 — 2026.08.20</div>
+  <div class="days" id="dayGrid" aria-hidden="true"></div>
+  <div class="days-legend">
+    <span><i class="swatch"></i>有紀錄的日子</span>
+    <span><i class="swatch out"></i>資料已經不在了</span>
+  </div>
+  <p class="counter-note">我記錄了 129 天。<br>其中一段，資料已經不在了。</p>
+</section>
+
 <section class="slide" id="s7">
   <div class="label">回顧與心得</div>
   <h2 class="heading">做完兩個 App<br><strong>我學到的事</strong></h2>
@@ -704,6 +821,19 @@
       </div>
     </div>
   </div>
+</section>
+
+<section class="slide" id="s-ps">
+  <div class="label">後記</div>
+  <h2 class="heading">簡報做完之後，<br>我的資料<strong>全沒了</strong></h2>
+  <p class="body">
+    App 是用 Codex 開發完成的。後來我想加功能，但那時我停止訂閱 GPT 了，所以換成 Claude 接手改。純粹是預算問題，沒有想太多。<br><br>
+    功能改好了，build 到手機上，本機資料全部消失。我沒有備份。<br><br>
+    更糟的是後面那一步。為了修復，我照著 Claude 的建議重置了 iPhone——連帶失去 2026 上半年的所有照片。
+  </p>
+  <p class="ps-punch">兩次的錯誤其實是同一個：<br>我把「它應該知道」當成了「它一定知道」。</p>
+  <p class="body">AI 可以替我寫完所有功能，但它不知道哪一筆資料對我來說是不能弄丟的，也不會在動手前替我算「萬一它錯了，我要賠多少」。</p>
+  <p class="ps-close">那是使用者才知道的事。<br>而我剛好是使用者。</p>
 </section>
 
 <section class="slide" id="s-end">
@@ -746,6 +876,41 @@
   }, { threshold: 0.3 });
 
   slides.forEach(s => io.observe(s));
+
+  // ── 129 天格子 ──
+  (function () {
+    const TOTAL = 129;
+    // 資料遺失的區間（第幾天到第幾天，含頭含尾）。4/14=第1天，6/2=第50天。
+    const LOST_FROM = 1, LOST_TO = 50;
+
+    const grid = document.getElementById('dayGrid');
+    if (!grid) return;
+
+    const frag = document.createDocumentFragment();
+    for (let i = 1; i <= TOTAL; i++) {
+      const d = document.createElement('i');
+      d.className = 'day' + (i >= LOST_FROM && i <= LOST_TO ? ' lost' : '');
+      d.style.animationDelay = (i * 9) + 'ms';
+      d.style.animationPlayState = 'paused';
+      frag.appendChild(d);
+    }
+    grid.appendChild(frag);
+
+    const cells = grid.querySelectorAll('.day');
+    const start = () => cells.forEach(el => el.style.animationPlayState = 'running');
+
+    if ('IntersectionObserver' in window) {
+      const gio = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { start(); gio.disconnect(); }
+        });
+      }, { threshold: .25 });
+      gio.observe(grid);
+    } else {
+      start();
+    }
+    window.addEventListener('beforeprint', start);
+  })();
 
   // Progress bar
   window.addEventListener('scroll', () => {
