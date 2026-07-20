@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<title>AI 應用實戰 — 用 AI 做兩個 App</title>
+<title>AI 應用實戰 — 從自身需求出發的 vibe coding 應用</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -524,6 +524,18 @@
     .day { animation: none !important; opacity: 1 !important; transform: none !important; }
     #s-ps { background: #fff; }
   }
+
+  /* ── 字級整體優化：收斂為少數幾階，避免忽大忽小 ── */
+  .body { font-size: 1.25rem; line-height: 1.85; }
+  .cover-sub { font-size: 1.2rem; line-height: 1.8; }
+  .card-body, .step-body, .gallery-card p, .media-note,
+  .end-body, .bug-text { font-size: 1.05rem; line-height: 1.8; }
+  .card-title, .step-title, .gallery-card h3, .app-name { font-size: 1.18rem; }
+  .quote p, .bio-creed, .counter-note, .ps-close { font-size: 1.3rem; line-height: 1.85; }
+  .ps-punch { font-size: clamp(1.4rem, 2.8vw, 1.9rem); }
+  .label, .cover-label, .card-num, .step-num, .screenshot-caption,
+  .days-legend, .counter-range, .bio-role, .app-desc, .tag, .chip,
+  .bug-fix, .counter-unit { font-size: .82rem; }
 </style>
 </head>
 <body>
@@ -533,7 +545,7 @@
 
 <section class="slide visible" id="s0">
   <div class="cover-label">AI 應用實戰 · 2026</div>
-  <h1 class="cover-title">用 AI 做了<em>兩個 App</em>，<br>從需求到上機的完整紀錄</h1>
+  <h1 class="cover-title">從自身需求出發的<br><em>vibe coding</em> 應用</h1>
   <p class="cover-sub">不會寫 code 也沒關係。只要你夠了解自己的需求，AI 就能幫你把它做出來。</p>
   <div class="cover-chips">
     <span class="chip">Xcode</span>
@@ -552,7 +564,7 @@
     <div class="bio-name">Lana</div>
     <div class="bio-role">休養中的產品設計師</div>
     <p class="body">6 年產品設計經驗。過去一年被迫停下來，一邊重新調校自己的工作與生活節奏，一邊用 AI 把日常裡最私密的需求做成產品——包括一支自己寫給自己用的情緒紀錄 App。</p>
-    <p class="bio-creed">相信工具始終服務於人，而身而為人的本質是體驗。<br>也相信最好的使用者研究對象，有時候就是自己。</p>
+    <p class="bio-creed">相信工具始終服務於人，而身而為人的本質是體驗，第一手資訊 Data 生於日常。</p>
   </div>
 </section>
 
@@ -577,109 +589,11 @@
   </div>
 </section>
 
-<section class="slide" id="s2">
-  <div class="app-header">
-    <div class="app-icon">🗓</div>
-    <div>
-      <div class="app-name">App 01 — 紀念日</div>
-      <div class="app-desc">Memorial Day Tracker</div>
-    </div>
-  </div>
-  <div class="label">需求來源</div>
-  <h2 class="heading">從「倒數計時 App」<br>到<strong>「任務紀念日」</strong></h2>
-  <div class="two-col">
-    <div>
-      <p class="body">
-        以前用過倒數計時 App，設定考試日期、計算剩餘天數。<br><br>
-        但我的需求不同——我需要記錄的是<strong>從開始到結束的時間跨度</strong>，而且可能長達數月甚至數年。
-      </p>
-      <div class="tags" style="margin-top:24px">
-        <span class="tag">長期任務追蹤</span>
-        <span class="tag">類「紀念日」概念</span>
-        <span class="tag">本機資料儲存</span>
-      </div>
-    </div>
-    <div class="quote">
-      <p>「我需要知道我已經做了這件事多少天，而不是還剩幾天。」</p>
-    </div>
-  </div>
-
-  <div class="gallery-grid">
-    <div class="gallery-card">
-      <div class="image-frame">
-        <img src="https://lanamao.github.io/ji3u-204g4-share/assets/app01-v1.png" alt="任務紀念日 App 第一版畫面">
-      </div>
-      <h3>第一版：先驗證核心概念</h3>
-      <p>先驗證核心概念，在 AI 建議下出現了釘選功能。</p>
-    </div>
-    <div class="gallery-card">
-      <div class="image-frame">
-        <img src="https://lanamao.github.io/ji3u-204g4-share/assets/app01-v2.png" alt="任務紀念日 App 第二版畫面">
-      </div>
-      <h3>第二版：開始做出視覺層次</h3>
-      <p>加入顏色卡片與更多資訊密度後，也從調整排序的邏輯。</p>
-    </div>
-  </div>
-  <p class="media-note">這幾張圖可以直接看出這個 App 的成長路徑：從能不能用，到好不好用，再到能不能自然融入每天的手機桌面。</p>
-</section>
-
-<section class="slide" id="s3">
-  <div class="label">實作關鍵</div>
-  <h2 class="heading"><strong>SwiftUI + SwiftData</strong><br>快速建立資料模型</h2>
-  <p class="body">這是一個標準的 CRUD 應用。透過 AI，我只需要定義出我的 Task 模型包含什麼欄位，像是名稱、開始日期、狀態與卡片顏色，它就能幫我寫好大部分的資料邏輯與畫面結構。</p>
-  
-  <div class="steps">
-    <div class="step">
-      <div class="step-num">01</div>
-      <div class="step-content">
-        <div class="step-title">資料持久化</div>
-        <div class="step-body">使用 iOS 內建的 SwiftData，不需要額外設定伺服器，資料直接存在 iPhone 本機。</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">02</div>
-      <div class="step-content">
-        <div class="step-title">動態時間計算</div>
-        <div class="step-body">實作一個 Timer 讓 UI 上的「已過天數」能即時跳動，增加使用者的成就感。</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">03</div>
-      <div class="step-content">
-        <div class="step-title">UI 與配色</div>
-        <div class="step-body">我直接請他使用 iOS guideline 製作，讓整體畫面在配色、留白和操作感上更貼近 iPhone 原生介面。</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="triple-gallery">
-    <div class="screenshot-item">
-      <div class="phone-frame">
-        <img src="https://lanamao.github.io/ji3u-204g4-share/assets/app01-widget.png" alt="紀念日 App 的 Widget 畫面">
-      </div>
-      <div class="screenshot-caption">在主畫面直接看到目前累積天數</div>
-    </div>
-    <div class="screenshot-item">
-      <div class="phone-frame">
-        <img src="https://lanamao.github.io/ji3u-204g4-share/assets/app01-final.png" alt="紀念日 App 最終版任務列表">
-      </div>
-      <div class="screenshot-caption">最終版：把每個任務整理成清楚的卡片列表</div>
-    </div>
-    <div class="screenshot-item">
-      <div class="phone-frame">
-        <img src="https://lanamao.github.io/ji3u-204g4-share/assets/app01-settings.png" alt="任務紀念日 App 的新增項目設定畫面">
-      </div>
-      <div class="screenshot-caption">設定畫面就是資料模型的投影</div>
-    </div>
-  </div>
-  <p class="media-note">這三張圖剛好對應到 App 的三個層次：桌面入口、任務列表，以及新增資料時的欄位設計。</p>
-</section>
-
 <section class="slide" id="s4">
   <div class="app-header">
     <div class="app-icon">🧠</div>
     <div>
-      <div class="app-name">App 02 — 情緒紀錄</div>
+      <div class="app-name">情緒紀錄</div>
       <div class="app-desc">Emotion Log</div>
     </div>
   </div>
@@ -719,8 +633,59 @@
   <p class="media-note">我先在紙本上把欄位和標記方式整理清楚，再把這個結構搬進 App，讓需求來源本身就能支撐後面的功能設計。</p>
 </section>
 
+<section class="slide" id="s3">
+  <div class="label">實作關鍵</div>
+  <h2 class="heading"><strong>SwiftUI + SwiftData</strong><br>快速建立資料模型</h2>
+  <p class="body">這是一個標準的 CRUD 應用。透過 AI，我只需要定義出我的 Task 模型包含什麼欄位，像是名稱、開始日期、狀態與卡片顏色，它就能幫我寫好大部分的資料邏輯與畫面結構。</p>
+  
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <div class="step-title">資料持久化</div>
+        <div class="step-body">使用 iOS 內建的 SwiftData，不需要額外設定伺服器，資料直接存在 iPhone 本機。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <div class="step-title">動態時間計算</div>
+        <div class="step-body">實作一個 Timer 讓 UI 上的「已過天數」能即時跳動，增加使用者的成就感。</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <div class="step-title">UI 與配色</div>
+        <div class="step-body">我直接請他依照 iOS guideline 製作，再加入自己偏好的風格，讓整體畫面在配色、留白和操作感上更貼近 iPhone 原生介面。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="triple-gallery">
+    <div class="screenshot-item">
+      <div class="phone-frame">
+        <img src="https://lanamao.github.io/ji3u-204g4-share/assets/app02-today.png" alt="情緒紀錄 App 的當日紀錄畫面">
+      </div>
+      <div class="screenshot-caption">當日紀錄</div>
+    </div>
+    <div class="screenshot-item">
+      <div class="phone-frame">
+        <img src="https://lanamao.github.io/ji3u-204g4-share/assets/app02-calendar.png" alt="情緒紀錄 App 的月曆畫面">
+      </div>
+      <div class="screenshot-caption">月曆模式</div>
+    </div>
+    <div class="screenshot-item">
+      <div class="phone-frame">
+        <img src="https://lanamao.github.io/ji3u-204g4-share/assets/app02-settings.png" alt="情緒紀錄 App 的藥物設定畫面">
+      </div>
+      <div class="screenshot-caption">藥物設定</div>
+    </div>
+  </div>
+</section>
+
 <section class="slide" id="s5">
-  <div class="label">App 02 · 功能設計</div>
+  <div class="label">功能設計</div>
   <h2 class="heading">不只是記錄<br><strong>而是為了與醫師溝通</strong></h2>
   <div class="card-grid cols3">
     <div class="card">
@@ -741,7 +706,7 @@
   </div>
   <div style="margin-top:24px">
     <div class="card" style="max-width:520px">
-      <div class="card-num">設計初衷</div>
+      <div class="card-num">設計延伸</div>
       <div class="card-title">希望這個 App 也能幫助到其他人</div>
       <div class="card-body">所有設定都做成可自訂，不綁定特定藥物或醫療情境，讓有相似需求的人都能使用。</div>
     </div>
@@ -750,7 +715,7 @@
 
 <section class="slide" id="s6">
   <div class="label">問題與解決</div>
-  <h2 class="heading">情緒紀錄 App · 問題與解決</h2>
+  <h2 class="heading"><strong>初開發問題與解決</strong></h2>
   <p class="body">兩次更新，修復兩個核心問題。因為對需求非常熟悉，整體開發順暢，主要處理了兩個具體的 Bug。</p>
 
   <div class="bug-list">
@@ -788,9 +753,45 @@
   <p class="counter-note">我記錄了 129 天。<br>其中一段，資料已經不在了。</p>
 </section>
 
+<section class="slide" id="s-ps">
+  <div class="label">後記</div>
+  <h2 class="heading">完成後<br><strong>發生了一些事故</strong></h2>
+  <p class="body">
+    App 是用 Codex 開發完成的。後來我想加功能，但那時我停止訂閱 GPT 了，所以換成 Claude 接手改。純粹是預算問題，沒有想太多。<br><br>
+    功能改好了，build 到手機上，本機資料全部消失。我沒有備份。<br><br>
+    更糟的是後面那一步。為了修復，我照著 Claude 的建議重置了 iPhone——連帶失去 2026 上半年的所有照片。
+  </p>
+  <p class="ps-punch">兩次的錯誤其實是同一個：<br>我把「它應該知道」當成了「它一定知道」。</p>
+  <p class="body">AI 可以替我寫完所有功能，但它不知道哪一筆資料對我來說是不能弄丟的。</p>
+  
+</section>
+
+<section class="slide" id="s-opt">
+  <div class="label">持續優化</div>
+  <h2 class="heading">在地基上<strong>優化</strong></h2>
+  <p class="body">資料沒了，但 App 的結構還在。我在原本的地基上補了三個優化。</p>
+  <div class="card-grid cols3">
+    <div class="card">
+      <div class="card-num">優化 01</div>
+      <div class="card-title">藥物劑量選擇</div>
+      <div class="card-body">增加藥物劑量的選擇。</div>
+    </div>
+    <div class="card">
+      <div class="card-num">優化 02</div>
+      <div class="card-title">臨時藥物呈現</div>
+      <div class="card-body">月曆模式補上臨時藥物的使用呈現。</div>
+    </div>
+    <div class="card">
+      <div class="card-num">優化 03</div>
+      <div class="card-title">常用詞補充</div>
+      <div class="card-body">補充說明增加常用詞。</div>
+    </div>
+  </div>
+</section>
+
 <section class="slide" id="s7">
   <div class="label">回顧與心得</div>
-  <h2 class="heading">做完兩個 App<br><strong>我學到的事</strong></h2>
+  <h2 class="heading">vibe code 產品開發<br><strong>我學到的事</strong></h2>
   <div class="steps">
     <div class="step">
       <div class="step-num">①</div>
@@ -802,8 +803,8 @@
     <div class="step">
       <div class="step-num">②</div>
       <div class="step-content">
-        <div class="step-title">Codex 比 ChatGPT 更適合做開發</div>
-        <div class="step-body">ChatGPT 適合諮詢，Codex 適合動手做。工具選對了，開發才會順。</div>
+        <div class="step-title">AI agent 和語言模型是不同的</div>
+        <div class="step-body">比如 ChatGPT 適合諮詢，Codex 適合動手做。工具選對了，開發才會順。</div>
       </div>
     </div>
     <div class="step">
@@ -816,24 +817,11 @@
     <div class="step">
       <div class="step-num">④</div>
       <div class="step-content">
-        <div class="step-title">有時候問題不在 code</div>
-        <div class="step-body">Widget 的破圖靠重裝解決。遇到怎麼改都沒用的 bug，試試換個方向。</div>
+        <div class="step-title">不要衝動相信 AI 給你的所有建議</div>
+        <div class="step-body">資料失去之後我馬上又請他給我救回資料的建議，導致產生更大的損失。</div>
       </div>
     </div>
   </div>
-</section>
-
-<section class="slide" id="s-ps">
-  <div class="label">後記</div>
-  <h2 class="heading">簡報做完之後，<br>我的資料<strong>全沒了</strong></h2>
-  <p class="body">
-    App 是用 Codex 開發完成的。後來我想加功能，但那時我停止訂閱 GPT 了，所以換成 Claude 接手改。純粹是預算問題，沒有想太多。<br><br>
-    功能改好了，build 到手機上，本機資料全部消失。我沒有備份。<br><br>
-    更糟的是後面那一步。為了修復，我照著 Claude 的建議重置了 iPhone——連帶失去 2026 上半年的所有照片。
-  </p>
-  <p class="ps-punch">兩次的錯誤其實是同一個：<br>我把「它應該知道」當成了「它一定知道」。</p>
-  <p class="body">AI 可以替我寫完所有功能，但它不知道哪一筆資料對我來說是不能弄丟的，也不會在動手前替我算「萬一它錯了，我要賠多少」。</p>
-  <p class="ps-close">那是使用者才知道的事。<br>而我剛好是使用者。</p>
 </section>
 
 <section class="slide" id="s-end">
@@ -843,8 +831,8 @@
   <div class="tags" style="margin-top:36px; justify-content:center;">
     <span class="tag dark">Xcode</span>
     <span class="tag dark">Codex</span>
+    <span class="tag dark">Claude</span>
     <span class="tag dark">iOS 本機部署</span>
-    <span class="tag dark">紀念日</span>
     <span class="tag dark">情緒紀錄</span>
   </div>
 </section>
